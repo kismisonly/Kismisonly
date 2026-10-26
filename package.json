@@ -7,7 +7,7 @@
   },
   "scripts": {
     "compile": "node scripts/compile.js",
-    "test": "node scripts/compile.js && node test/launchpad.test.js"
+    "test": "node scripts/compile.js && node test/launchpad.test.js && node test/doppler.test.mjs"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "ethers": "^6.13.4",
-    "ganache": "^7.9.2"
+    "ganache": "^7.9.2",
+    "solady": "^0.1.20"
   }
 }

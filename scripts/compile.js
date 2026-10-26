@@ -10,6 +10,8 @@ const files = [
   "contracts/Launchpad.sol",
   "contracts/interfaces/ILiquidityLauncher.sol",
   "test/MockLauncher.sol",
+  "test/DopplerEncodingHarness.sol",
+  "test/MockDoppler.sol",
 ];
 const sources = Object.fromEntries(files.map((f) => [f, { content: fs.readFileSync(f, "utf8") }]));
 function findImports(p) {

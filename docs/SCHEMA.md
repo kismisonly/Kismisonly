@@ -87,11 +87,35 @@ npm run compile   # solc-js, output ke build/
 npm test          # ganache lokal: alokasi supply, vesting, dev buy, fee split, config
 ```
 
-## 8. Website (`web/`)
+## 8. Website (`web/`): langsung ke Doppler
 
-Vite + React + ethers. Halaman: Home, Launch (2 langkah), Claim fees (fee ETH/token + rilis
-vesting), How it works. Semua alamat jaringan diambil dari env, lihat `web/.env.example`.
-Selama `VITE_LAUNCHPAD_ADDRESS` kosong, tombol transaksi dinonaktifkan.
+Website **tidak** memakai kontrak `Launchpad` di atas. Website memanggil `Airlock.create` resmi
+Doppler di Robinhood Mainnet (chain 4663) dari wallet user. Karena itu tidak ada kontrak yang
+perlu di-deploy dan tidak perlu private key deployer. Encoder ada di `web/src/doppler.js`.
 
-Deploy ke Vercel: import repo ini di Vercel, set **Root Directory = `web`**, isi env
-`VITE_*`, lalu Deploy. Setiap push berikutnya otomatis ter-deploy.
+| Bagian | Nilai |
+|---|---|
+| Token | DopplerERC20V1 lewat `DopplerERC20V1Factory` (0x1b37…b69a), 100B supply |
+| Vesting | 15% di dalam token: cliff 30 hari, durasi 365 hari, penerima = creator |
+| Pool | 85% ke Uniswap v4 lewat `DopplerHookInitializer` (0x4e34…a544), pasangan ETH, tick -239400..-129400, spacing 200 |
+| Fee swap | 1% statis. Beneficiaries (pool langsung terkunci): Doppler 5% (wajib, `airlock.owner()`), platform `VITE_PLATFORM_SHARE_BPS`, sisanya creator |
+| Governance / migrator | `NoOpGovernanceFactory` / `NoOpMigrator` (tidak ada migrasi, pool permanen) |
+| Alamat token | Opsional vanity `VITE_VANITY_SUFFIX`: salt dicari di browser (clone solady + CREATE2) |
+| Klaim fee | `DopplerHookInitializer.collectFees(poolId)`, dipanggil oleh beneficiary |
+| Klaim vesting | `token.release(amount)` |
+
+Pengaman sebelum minta tanda tangan: website menjalankan `Airlock.create` sebagai simulasi
+(`eth_call`, gratis) di chain asli. Kalau ada parameter yang ditolak kontrak, atau alamat token
+beda dari prediksi, proses berhenti di sini.
+
+Pengujian (`npm test`):
+- `test/doppler.test.mjs`: encoder diuji terhadap `DopplerEncodingHarness`, yang menyalin aturan
+  validasi Doppler (urutan/total beneficiaries, porsi protokol, keselarasan tick, farTick,
+  batas vesting). Prediksi alamat dicocokkan dengan solady `LibClone`.
+- Tes browser dijalankan dengan mock Doppler (`test/MockDoppler.sol`) yang dipasang di alamat
+  kanonik pada chain lokal 4663: upload, vanity, simulasi, launch, klaim fee, rilis vesting.
+- **Belum** diuji terhadap kontrak Doppler asli. Explorer dan RPC Robinhood tidak bisa diakses
+  dari environment pengembangan. Launch pertama di mainnet sebaiknya token uji kecil.
+
+Deploy ke Vercel: import repo ini di Vercel, set **Root Directory = `web`**, isi env dari
+`web/.env.example` (semua opsional), lalu Deploy. Setiap push berikutnya otomatis ter-deploy.
