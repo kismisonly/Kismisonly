@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({ plugins: [react()] });
+// base relatif supaya jalan di root domain (Vercel/Netlify) maupun subpath (GitHub Pages).
+export default defineConfig({ base: "./", plugins: [react()] });
