@@ -1,0 +1,31 @@
+{
+  "name": "kismisonly-launchpad",
+  "version": "1.0.0",
+  "description": "Launchpad token model Bankr/Doppler",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "test": "node scripts/compile.js && node test/launchpad.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kismisonly/Kismisonly.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kismisonly/Kismisonly/issues"
+  },
+  "homepage": "https://github.com/kismisonly/Kismisonly#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "solc": "^0.8.24"
+  },
+  "devDependencies": {
+    "ethers": "^6.13.4",
+    "ganache": "^7.9.2"
+  }
+}
