@@ -86,3 +86,12 @@ npm install
 npm run compile   # solc-js, output ke build/
 npm test          # ganache lokal: alokasi supply, vesting, dev buy, fee split, config
 ```
+
+## 8. Website (`web/`)
+
+Vite + React + ethers. Halaman: Home, Launch (2 langkah), Claim fees (fee ETH/token + rilis
+vesting), How it works. Semua alamat jaringan diambil dari env, lihat `web/.env.example`.
+Selama `VITE_LAUNCHPAD_ADDRESS` kosong, tombol transaksi dinonaktifkan.
+
+Deploy ke Vercel: import repo ini di Vercel, set **Root Directory = `web`**, isi env
+`VITE_*`, lalu Deploy. Setiap push berikutnya otomatis ter-deploy.
